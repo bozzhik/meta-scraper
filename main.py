@@ -6,18 +6,21 @@ import unicodedata
 from datetime import datetime
 
 OUTPUT_FOLDER = "output"
+PARTISANS_FOLDER = os.path.join(OUTPUT_FOLDER, "partisans")
 WEBSITES_FILE = "websites.json"
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+os.makedirs(PARTISANS_FOLDER, exist_ok=True)
 
 def load_websites(file_path):
     """Loads website URLs from a JSON file."""
     try:
         with open(file_path, encoding="utf-8") as f:
-            return json.load(f).get("urls", [])
+            data = json.load(f)
+            return data.get("urls", []), data.get("partisans_urls", [])
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error loading {file_path}: {e}")
-        return []
+        return [], []
 
 def fetch_metadata(url):
     """Fetches metadata from a given URL."""
@@ -40,10 +43,10 @@ def fetch_metadata(url):
         print(f"Error fetching metadata for {url}: {e}")
         return None
 
-def save_metadata(metadata):
+def save_metadata(metadata, folder):
     """Saves metadata to an .md file."""
     timestamp = datetime.now().strftime("%Y%m%d")
-    file_name = os.path.join(OUTPUT_FOLDER, f"{timestamp}_{metadata['url'].replace('http://', '').replace('https://', '').replace('/', '_')}.md")
+    file_name = os.path.join(folder, f"{timestamp}_{metadata['url'].replace('http://', '').replace('https://', '').replace('/', '_')}.md")
     try:
         with open(file_name, "w", encoding="utf-8") as md_file:
             md_file.write(f"# {metadata['url']}\n\n")
@@ -52,16 +55,24 @@ def save_metadata(metadata):
     except Exception as e:
         print(f"Error saving metadata for {metadata['url']}: {e}")
 
-if __name__ == "__main__":
-    sites = load_websites(WEBSITES_FILE)
+def process_urls(urls, folder):
+    """Processes a list of URLs and saves their metadata to the specified folder."""
+    for site in urls:
+        print(f"Fetching metadata for: {site}")
+        metadata = fetch_metadata(site)
+        if metadata is None:
+            print(f"Skipping {site}: Unable to fetch metadata (URL might be invalid or inaccessible).")
+        else:
+            save_metadata(metadata, folder)
 
-    if not sites:
-        print(f"No websites found in {WEBSITES_FILE}. Please add URLs to the file.")
+if __name__ == "__main__":
+    websites, partisans_urls = load_websites(WEBSITES_FILE)
+
+    if not websites and not partisans_urls:
+        print(f"No websites or partisans URLs found in {WEBSITES_FILE}. Please add URLs to the file.")
     else:
-        for site in sites:
-            print(f"Fetching metadata for: {site}")
-            metadata = fetch_metadata(site)
-            if metadata is None:
-                print(f"Skipping {site}: Unable to fetch metadata (URL might be invalid or inaccessible).")
-            else:
-                save_metadata(metadata)
+        if websites:
+            process_urls(websites, OUTPUT_FOLDER)
+
+        if partisans_urls:
+            process_urls(partisans_urls, PARTISANS_FOLDER)
