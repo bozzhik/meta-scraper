@@ -46,7 +46,7 @@ def save_metadata(metadata):
     file_name = os.path.join(OUTPUT_FOLDER, f"{timestamp}_{metadata['url'].replace('http://', '').replace('https://', '').replace('/', '_')}.md")
     try:
         with open(file_name, "w", encoding="utf-8") as md_file:
-            md_file.write(f"# Metadata for {metadata['url']}\n\n")
+            md_file.write(f"# {metadata['url']}\n\n")
             md_file.writelines(f"**{key.capitalize()}:** {value}\n\n" for key, value in metadata.items() if key != "url")
         print(f"Saved to [{file_name}]")
     except Exception as e:
