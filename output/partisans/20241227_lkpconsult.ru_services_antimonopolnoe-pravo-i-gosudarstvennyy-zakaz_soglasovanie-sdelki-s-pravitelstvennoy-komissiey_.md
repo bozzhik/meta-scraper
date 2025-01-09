@@ -38,10 +38,9 @@
 
 **External links:**
 
-- https://www.consultant.ru/document/cons_doc_LAW_411065/e1df52198f2c959255da8f5b1ae1cbbd3dce6641/#dst100011
 - https://minfin.gov.ru/ru/permission/79-81?id_57=301496-perechen_otsenshchikov_otsenochnykh_organizatsii_rekomendovannykh_dlya_provedeniya_otsenki_rynochnoi_stoimosti_aktivov
+- https://www.consultant.ru/document/cons_doc_LAW_411065/e1df52198f2c959255da8f5b1ae1cbbd3dce6641/#dst100011
 - https://t.me/LKPconsult
 - https://www.youtube.com/@LKP_consult
-- https://t.me/LKPconsult
 - https://drive.google.com/file/d/1Q6O_qNn_U3ncdUCIc4jeqgru9jIYj78d/view?usp=sharing
 

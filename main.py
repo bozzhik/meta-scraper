@@ -89,7 +89,6 @@ def save_metadata(metadata, folder):
     file_name = os.path.join(folder, f"{timestamp}_{metadata['url'].replace('http://', '').replace('https://', '').replace('/', '_')}.md")
     
     domain = metadata["url"].rstrip("/")
-
     try:
         with open(file_name, "w", encoding="utf-8") as md_file:
             md_file.write(f"# {metadata['url']}\n\n")
@@ -124,11 +123,12 @@ def save_metadata(metadata, folder):
                 md_file.writelines(f"| {word:<10} | {count:<5} |\n" for word, count in top_words.items())
                 md_file.write("\n\n")
 
-            # External Links (excluding links matching the domain or invalid links)
+            # External Links (excluding duplicates)
             external_links = metadata.get("external_links", [])
+            unique_external_links = list(set(external_links))  # Remove duplicates
             filtered_external_links = [
-                link for link in external_links 
-                if not link.startswith(domain) and not link.startswith("#") and not link.startswith("tel:")
+                link for link in unique_external_links 
+                if not link.startswith(domain) and not link.startswith("#") and not link.startswith("tel:") and link.strip()
             ]
             if filtered_external_links:
                 md_file.write("**External links:**\n\n")

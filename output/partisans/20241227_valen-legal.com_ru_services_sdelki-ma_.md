@@ -36,22 +36,10 @@
 
 **External links:**
 
-- 
-- 
-- https://wa.me/79671706830
+- https://policies.google.com/privacy
+- https://policies.google.com/terms
 - https://t.me/+79671706830
-- 
-- https://wa.me/79671706830
-- https://t.me/+79671706830
-- 
 - javascript:;
 - https://wa.me/79671706830
 - https://www.linkedin.com/company/27096266/admin/
-- https://t.me/+79671706830
-- https://wa.me/79671706830
-- javascript:;
-- https://policies.google.com/privacy
-- https://policies.google.com/terms
-- javascript:;
-- javascript:;
 

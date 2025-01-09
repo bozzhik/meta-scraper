@@ -38,9 +38,7 @@
 
 **External links:**
 
-- 
 - https://t.me/LKPconsult
 - https://www.youtube.com/@LKP_consult
-- https://t.me/LKPconsult
 - https://drive.google.com/file/d/1Q6O_qNn_U3ncdUCIc4jeqgru9jIYj78d/view?usp=sharing
 
