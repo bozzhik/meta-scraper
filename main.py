@@ -52,9 +52,22 @@ def fetch_metadata(url):
         visible_text = " ".join([text for text in soup.stripped_strings])
         words = re.findall(r'\w+', visible_text.lower())
         word_counts = Counter(words)
-        stopwords = set(["and", "the", "a", "to", "of", "in", "is", "it", "you", "that", "on", "for", "with", "as", "at", "this", "by", "an", "be", "are", "or", "was", "but"])
-        filtered_words = [word for word in words if word not in stopwords]
-        metadata["top_words"] = dict(word_counts.most_common(20))
+
+        # Expanded stopwords list including common prepositions and pronouns
+        stopwords = set([
+            "и", "в", "на", "с", "по", "о", "из", "за", "для", "к", "от", "при",
+            "что", "это", "как", "так", "но", "а", "же", "то", "у", "об", "над",
+            "ли", "же", "без", "до", "под", "через", "между", "про", "вне", "поэтому",
+            "мы", "я", "они", "вы", "он", "она", "его", "ее", "их", "мне", "тебе", "вас", "нас"
+        ])
+
+        # Filter out stopwords, one-letter words, and numbers
+        filtered_words = [
+            word for word in words
+            if word not in stopwords and len(word) > 1 and not word.isdigit()
+        ]
+        filtered_word_counts = Counter(filtered_words)
+        metadata["top_words"] = dict(filtered_word_counts.most_common(20))
 
         # Images
         metadata["images"] = [img["src"] for img in soup.find_all("img", src=True)]
