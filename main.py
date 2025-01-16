@@ -7,6 +7,7 @@ from datetime import datetime
 from collections import Counter
 from urllib.parse import urlparse
 import re
+import csv
 
 OUTPUT_FOLDER = "output"
 PARTISANS_FOLDER = os.path.join(OUTPUT_FOLDER, "partisans")
@@ -140,8 +141,29 @@ def save_metadata(metadata, folder):
     except Exception as e:
         print(f"Error saving metadata for {metadata['url']}: {e}")
 
-def process_urls(urls, folder):
-    """Processes a list of URLs and saves their metadata to the specified folder."""
+def save_to_csv(metadata_list, csv_file):
+    """Saves metadata list to a CSV file."""
+    try:
+        is_new_file = not os.path.exists(csv_file)
+        with open(csv_file, mode="a", encoding="utf-8", newline="") as file:
+            writer = csv.writer(file)
+            if is_new_file:
+                # Add column headers if the file is new
+                writer.writerow(["url", "title", "description", "keywords", "author", "og_image", "top_words", "external_links"])
+            for metadata in metadata_list:
+                writer.writerow([
+                    metadata["url"], metadata["title"], metadata["description"],
+                    metadata["keywords"], metadata["author"], metadata["og_image"],
+                    json.dumps(metadata["top_words"], ensure_ascii=False),
+                    json.dumps(metadata["external_links"], ensure_ascii=False)
+                ])
+        print(f"Data saved to {csv_file}")
+    except Exception as e:
+        print(f"Error saving to CSV: {e}")
+
+def process_urls(urls, folder, csv_file):
+    """Processes a list of URLs, saves metadata to the folder and CSV file."""
+    metadata_list = []
     for site in urls:
         print(f"Fetching metadata for: {site}")
         metadata = fetch_metadata(site)
@@ -149,15 +171,20 @@ def process_urls(urls, folder):
             print(f"Skipping {site}: Unable to fetch metadata (URL might be invalid or inaccessible).")
         else:
             save_metadata(metadata, folder)
+            metadata_list.append(metadata)
+    if metadata_list:
+        save_to_csv(metadata_list, csv_file)
 
 if __name__ == "__main__":
     websites, partisans_urls = load_websites(WEBSITES_FILE)
+
+    websites_csv = os.path.join(OUTPUT_FOLDER, "websites_metadata.csv")
+    partisans_csv = os.path.join(PARTISANS_FOLDER, "partisans_metadata.csv")
 
     if not websites and not partisans_urls:
         print(f"No websites or partisans URLs found in {WEBSITES_FILE}. Please add URLs to the file.")
     else:
         if websites:
-            process_urls(websites, OUTPUT_FOLDER)
-
+            process_urls(websites, OUTPUT_FOLDER, websites_csv)
         if partisans_urls:
-            process_urls(partisans_urls, PARTISANS_FOLDER)
+            process_urls(partisans_urls, PARTISANS_FOLDER, partisans_csv)
