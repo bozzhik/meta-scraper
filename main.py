@@ -141,15 +141,16 @@ def save_metadata(metadata, folder):
     except Exception as e:
         print(f"Error saving metadata for {metadata['url']}: {e}")
 
-def save_to_csv(metadata_list, csv_file):
-    """Saves metadata list to a CSV file."""
+def save_to_csv(metadata_list, base_csv_file):
+    """Saves metadata list to a CSV file with a timestamp, overwriting the previous file."""
+    timestamp = datetime.now().strftime("%Y%m%d")
+    csv_file = f"{base_csv_file.replace('.csv', '')}_{timestamp}.csv"
+
     try:
-        is_new_file = not os.path.exists(csv_file)
-        with open(csv_file, mode="a", encoding="utf-8", newline="") as file:
+        with open(csv_file, mode="w", encoding="utf-8", newline="") as file:
             writer = csv.writer(file)
-            if is_new_file:
-                # Add column headers if the file is new
-                writer.writerow(["url", "title", "description", "keywords", "author", "og_image", "top_words", "external_links"])
+            # Add column headers
+            writer.writerow(["url", "title", "description", "keywords", "author", "og_image", "top_words", "external_links"])
             for metadata in metadata_list:
                 writer.writerow([
                     metadata["url"], metadata["title"], metadata["description"],
